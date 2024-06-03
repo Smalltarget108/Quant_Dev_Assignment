@@ -1,25 +1,28 @@
+import os
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from datetime import datetime, timezone, timedelta
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 from app import models, schemas, crud
 from app.dependencies import get_db
+from passlib.context import CryptContext
+
 
 # JWT
-SECRET_KEY = "quant"
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+SECRET_KEY = os.getenv("SECRET_KEY", "quant")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
+# Initialize
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-# authentication
 def get_password_hash(password: str) -> str:
     return pwd_context.hash(password)
 
@@ -86,10 +89,10 @@ def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db_user = crud.get_user_by_username(db, username=user.username)
     if db_user:
         raise HTTPException(status_code=400, detail="Username already registered")
-    # hashed_password = get_password_hash(user.password)
+    hashed_password = get_password_hash(user.password)
     # print(hashed_password)
-    # user.password = hashed_password
-    print(user.password)
+    user.password = hashed_password
+    # print(user.password)
     return crud.create_user(db=db, user=user)
 
 
