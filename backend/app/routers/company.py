@@ -6,6 +6,11 @@ router = APIRouter()
 
 @router.get("/company/{symbol}/info")
 def get_company_info(symbol: str):
+    """
+    Fetch company information and key financials for the given stock symbol.
+
+    - **symbol**: Stock symbol (e.g., AAPL)
+    """
     try:
         info = fetch_company_info(symbol)
         financials = fetch_company_financials(symbol)
