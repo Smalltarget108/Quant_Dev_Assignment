@@ -3,6 +3,7 @@ import requests
 API_KEY = "SU26C7FMIS5I176B"
 
 
+# request limit: 25 per day
 def fetch_forex_data(
     from_currency: str, to_currency: str, start_date: str, end_date: str
 ):

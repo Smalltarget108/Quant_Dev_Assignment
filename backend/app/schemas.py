@@ -1,23 +1,9 @@
-from pydantic import BaseModel
-from typing import List, Optional
-
-
-class ForexData(BaseModel):
-    date: str
-    rate: float
-
-
-class CompanyInfo(BaseModel):
-    name: str
-    description: str
-    sector: str
-    industry: str
-    market_cap: float
-    pe_ratio: float
+from pydantic import BaseModel, EmailStr
 
 
 class UserBase(BaseModel):
     username: str
+    email: EmailStr
 
 
 class UserCreate(UserBase):
@@ -34,28 +20,3 @@ class User(UserBase):
 class Token(BaseModel):
     access_token: str
     token_type: str
-
-
-class TokenData(BaseModel):
-    username: str | None = None
-
-
-class StockData(BaseModel):
-    date: str
-    open: float
-    high: float
-    low: float
-    close: float
-    volume: int
-
-
-class StockStatistics(BaseModel):
-    mean: float
-    median: float
-    std_dev: float
-
-
-class NewsArticle(BaseModel):
-    title: str
-    url: str
-    published_at: str

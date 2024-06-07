@@ -108,6 +108,11 @@ def login(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
+# Fetch user profile route
 @router.get("/me", response_model=schemas.User)
-def read_users_me(current_user: models.User = Depends(get_current_user)):
+def read_users_profile(current_user: models.User = Depends(get_current_user)):
+    """
+    Fetch user profile.
+
+    """
     return current_user
