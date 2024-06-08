@@ -17,6 +17,58 @@ def fetch_stock_data(symbol: str, start_date: str, end_date: str):
     return stock_data
 
 
+def calculate_moving_average(data: pd.Series, window_size: int):
+    return data.rolling(window=window_size).mean().to_dict()
+
+
+def calculate_rsi(data: pd.Series, period: int = 14):
+    delta = data.diff()  # calculates the difference between consecutive data points
+    gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
+    rs = gain / loss
+    rsi = 100 - (100 / (1 + rs))  # make index ranging from 0 to 100
+    return rsi.to_dict()
+
+
+def fetch_stock_indicators(symbol: str, start_date: str, end_date: str):
+    stock = yf.Ticker(symbol)
+    extended_start_date = pd.to_datetime(start_date) - pd.DateOffset(months=12)
+
+    hist = stock.history(start=extended_start_date, end=end_date)
+
+    if hist.empty:
+        return {"error": "No data found"}
+
+    close_prices = hist["Close"]
+    indicators = {
+        "50_day_moving_average": calculate_moving_average(close_prices, 50),
+        "200_day_moving_average": calculate_moving_average(close_prices, 200),
+        "RSI": calculate_rsi(close_prices, 14),
+    }
+
+    # only include original start_date to end_date
+    # tz_localize(None) remove timezone to comparable in pandas timestamp
+    filtered_indicators = {
+        "50_day_moving_average": {
+            date: value
+            for date, value in indicators["50_day_moving_average"].items()
+            if pd.to_datetime(date).tz_localize(None) >= pd.to_datetime(start_date)
+        },
+        "200_day_moving_average": {
+            date: value
+            for date, value in indicators["200_day_moving_average"].items()
+            if pd.to_datetime(date).tz_localize(None) >= pd.to_datetime(start_date)
+        },
+        "RSI": {
+            date: value
+            for date, value in indicators["RSI"].items()
+            if pd.to_datetime(date).tz_localize(None) >= pd.to_datetime(start_date)
+        },
+    }
+
+    return filtered_indicators
+
+
 def fetch_stock_statistics(symbol: str):
     stock = yf.Ticker(symbol)
     statistics = {
