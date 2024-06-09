@@ -4,9 +4,9 @@ import Search from '../components/Search';
 import Charts from '../components/Charts';
 import ForexChart from '../components/ForexChart';
 
-import Statistics from '../components/Statistics';
+// import Statistics from '../components/Statistics';
 import NewsFeed from '../components/NewsFeed';
-import Profile from '../components/Profile';
+import Profile from '../components/CompanyInfo';
 import Financials from '../components/Financials';
 
 const Dashboard: React.FC = () => {
@@ -27,8 +27,8 @@ const Dashboard: React.FC = () => {
     switch (selectedComponent) {
       case 'Charts':
         return <Charts symbol={symbol} />;
-      case 'Statistics':
-        return <Statistics symbol={symbol} />;
+      // case 'Statistics':
+      //   return <Statistics symbol={symbol} />;
       case 'NewsFeed':
         return <NewsFeed symbol={symbol} />;
       case 'Profile':
@@ -47,11 +47,11 @@ const Dashboard: React.FC = () => {
           variant="permanent"
           anchor="left"
           sx={{
-            width: 240,
+            width: "20%",
             '& .MuiDrawer-paper': {
-              width: 240,
+              width: "20%",
               boxSizing: 'border-box',
-              marginTop: '64px',
+              marginTop: '58px',
             },
           }}
         >
@@ -60,9 +60,9 @@ const Dashboard: React.FC = () => {
               <ListItem component="button" onClick={() => setSelectedComponent('Charts')}>
                 <ListItemText primary="Charts"/>
               </ListItem>
-              <ListItem component="button" onClick={() => setSelectedComponent('Statistics')}>
+              {/* <ListItem component="button" onClick={() => setSelectedComponent('Statistics')}>
                 <ListItemText primary="Statistics" />
-              </ListItem>
+              </ListItem> */}
               <ListItem component="button" onClick={() => setSelectedComponent('NewsFeed')}>
                 <ListItemText primary="News" />
               </ListItem>

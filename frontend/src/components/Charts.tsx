@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Plot from 'react-plotly.js';
 import { Box, Typography, Grid, Button, TextField } from '@mui/material';
+import Statistics from './Statistics';
 import { fetchStockData, fetchStockIndicators } from '../services/api';
 
 interface StockData {
@@ -228,6 +229,7 @@ const Charts: React.FC<{symbol: string}> = ({ symbol }) => {
           ],
         }}
       />
+      <Statistics symbol={symbol} startDate={startDate} endDate={endDate} />
     </Box>
   );
 };

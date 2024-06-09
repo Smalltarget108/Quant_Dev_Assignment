@@ -47,14 +47,20 @@ def get_stock_indicators(
 
 
 @router.get("/stock/{symbol}/statistics")
-def get_stock_statistics(symbol: str):
+def get_stock_statistics(
+    symbol: str,
+    start_date: str,
+    end_date: str,
+):
     """
-    Fetch summary statistics for the given stock symbol.
+    Fetch summary statistics for the given stock symbol between the specified dates.
 
     - **symbol**: Stock symbol (e.g., AAPL)
+    - **start_date**: Start date in YYYY-MM-DD format
+    - **end_date**: End date in YYYY-MM-DD format
     """
     try:
-        stats = fetch_stock_statistics(symbol)
+        stats = fetch_stock_statistics(symbol, start_date, end_date)
         return stats
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

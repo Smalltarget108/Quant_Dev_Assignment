@@ -51,7 +51,7 @@ const Financials: React.FC<FinancialsProps> = ({ symbol }) => {
           <TableRow>
             <TableCell><strong>Metric</strong></TableCell>
             {Object.keys(financials[Object.keys(financials)[0]]).map(date => (
-              <TableCell key={date}><strong>{formatDate(date)}</strong></TableCell>
+              <TableCell key={date}>{formatDate(date)}</TableCell>
             ))}
           </TableRow>
         </TableHead>

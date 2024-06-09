@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import { fetchStatistics } from '../services/api';
+import { Box, Typography, CircularProgress, Table, TableBody, TableCell, TableContainer, TableRow, Paper } from '@mui/material';
+import { fetchStockStatistics } from '../services/api';
 
 interface StatisticsProps {
   symbol: string;
+  startDate: string;
+  endDate: string;
 }
 
-const Statistics: React.FC<StatisticsProps> = ({ symbol }) => {
+const Statistics: React.FC<StatisticsProps> = ({ symbol, startDate, endDate }) => {
   const [statistics, setStatistics] = useState<any>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -14,11 +16,16 @@ const Statistics: React.FC<StatisticsProps> = ({ symbol }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const stats = await fetchStatistics(symbol);
-        setStatistics(stats);
-        // console.log("Statistics.tsx: stats:", stats);
+        const stats = await fetchStockStatistics(symbol, startDate, endDate);
+        setStatistics({
+          mean: stats.mean.toFixed(2),
+          median: stats.median.toFixed(2),
+          std: stats.std.toFixed(2),
+          min: stats.min.toFixed(2),
+          max: stats.max.toFixed(2),
+        });
       } catch (err) {
-        // console.error("Error fetching statistics:", err);
+        console.error("Error fetching statistics:", err);
         setError("Failed to fetch statistics");
       } finally {
         setLoading(false);
@@ -26,10 +33,10 @@ const Statistics: React.FC<StatisticsProps> = ({ symbol }) => {
     };
 
     fetchData();
-  }, [symbol]);
+  }, [symbol, startDate, endDate]);
 
   if (loading) {
-    return <Typography variant="h6">Loading...</Typography>;
+    return <CircularProgress />;
   }
 
   if (error) {
@@ -42,24 +49,26 @@ const Statistics: React.FC<StatisticsProps> = ({ symbol }) => {
 
   return (
     <Box className="p-4 bg-white shadow-md rounded-md">
-      <Typography variant="h6" gutterBottom>
-        Statistics
+      <Typography variant="h6" component="h2" gutterBottom>
+        Summary Statistics
       </Typography>
-      <TableContainer>
+      <TableContainer sx={{ width: '80%' }}>
         <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell><strong>Metric</strong></TableCell>
-              <TableCell><strong>Value</strong></TableCell>
-            </TableRow>
-          </TableHead>
           <TableBody>
-            {Object.entries(statistics).map(([key, value]) => (
-              <TableRow key={key}>
-                <TableCell>{key}</TableCell>
-                <TableCell>{String(value)}</TableCell>
-              </TableRow>
-            ))}
+            <TableRow>
+              <TableCell><strong>Mean</strong></TableCell>
+              <TableCell><strong>Median</strong></TableCell>
+              <TableCell><strong>Standard Deviation</strong></TableCell>
+              <TableCell><strong>Min</strong></TableCell>
+              <TableCell><strong>Max</strong></TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>{statistics.mean}</TableCell>
+              <TableCell>{statistics.median}</TableCell>
+              <TableCell>{statistics.std}</TableCell>
+              <TableCell>{statistics.min}</TableCell>
+              <TableCell>{statistics.max}</TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>

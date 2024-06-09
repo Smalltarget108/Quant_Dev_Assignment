@@ -25,9 +25,11 @@ export const fetchStockIndicators = async (symbol: string, startDate: string, en
   return response.data;
 };
 
-export const fetchStatistics = async (symbol: string) => {
-  const response = await api.get(`/stock/${symbol}/statistics`);
-  return response.data;  
+export const fetchStockStatistics = async (symbol: string, startDate: string, endDate: string) => {
+  const response = await api.get(`/stock/${symbol}/statistics`, {
+    params: { start_date: startDate, end_date: endDate },
+  });
+  return response.data;
 };
 
 export const fetchNews = async (symbol: string) => {

@@ -1,5 +1,6 @@
 import yfinance as yf
 import pandas as pd
+import numpy as np
 
 
 def fetch_stock_data(symbol: str, start_date: str, end_date: str):
@@ -69,27 +70,19 @@ def fetch_stock_indicators(symbol: str, start_date: str, end_date: str):
     return filtered_indicators
 
 
-def fetch_stock_statistics(symbol: str):
+def fetch_stock_statistics(symbol: str, start_date: str, end_date: str):
     stock = yf.Ticker(symbol)
+    hist = stock.history(start=start_date, end=end_date)
+
+    if hist.empty:
+        return {"error": "No data found"}
+
     statistics = {
-        "Market Cap": stock.info.get("marketCap"),
-        "Enterprise Value": stock.info.get("enterpriseValue"),
-        "Trailing PE": stock.info.get("trailingPE"),
-        "Forward PE": stock.info.get("forwardPE"),
-        "PEG Ratio": stock.info.get("pegRatio"),
-        "Price to Sales (TTM)": stock.info.get("priceToSalesTrailing12Months"),
-        "Price to Book": stock.info.get("priceToBook"),
-        "Enterprise to Revenue": stock.info.get("enterpriseToRevenue"),
-        "Enterprise to EBITDA": stock.info.get("enterpriseToEbitda"),
-        "Profit Margins": stock.info.get("profitMargins"),
-        "EBITDA Margins": stock.info.get("ebitdaMargins"),
-        "Operating Margins": stock.info.get("operatingMargins"),
-        "Gross Margins": stock.info.get("grossMargins"),
-        "Total Debt to Equity": stock.info.get("totalDebtToEquity"),
-        "Current Ratio": stock.info.get("currentRatio"),
-        "Quick Ratio": stock.info.get("quickRatio"),
-        "Return on Assets": stock.info.get("returnOnAssets"),
-        "Return on Equity": stock.info.get("returnOnEquity"),
+        "mean": hist["Close"].mean(),
+        "median": hist["Close"].median(),
+        "std": hist["Close"].std(),
+        "min": hist["Close"].min(),
+        "max": hist["Close"].max(),
     }
     return statistics
 
@@ -112,8 +105,30 @@ def fetch_profile(symbol: str):
 
 def fetch_financials(symbol: str):
     stock = yf.Ticker(symbol)
-    financials = stock.financials.T.to_dict()
-    return financials
+    financials = stock.financials.T
+    # print("Fetched financials data:", financials)
+    # print("Available columns:", financials.columns)
+
+    top_metrics = financials.loc[
+        :,
+        [
+            "Total Revenue",
+            "Gross Profit",
+            "Operating Income",
+            "Net Income",
+            "EBITDA",
+            "EBIT",
+            "Total Expenses",
+            "Research And Development",
+            "Selling General And Administration",
+            "Cost Of Revenue",
+        ],
+    ]
+    # print("Top metrics data:", top_metrics)
+    top_metrics.replace([pd.NA, float("inf"), float("-inf")], None, inplace=True)
+    financials_dict = top_metrics.to_dict()
+
+    return financials_dict
 
 
 def fetch_news(symbol: str):
