@@ -1,5 +1,5 @@
-from fastapi import APIRouter, HTTPException
-
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
 from app.utils.yahoo_finance import (
     fetch_stock_data,
     fetch_stock_indicators,
@@ -7,11 +7,21 @@ from app.utils.yahoo_finance import (
     fetch_news,
 )
 
+from app import models
+from .auth import get_current_user
+from app.dependencies import get_db
+
 router = APIRouter()
 
 
 @router.get("/stock/{symbol}/data")
-def get_stock_data(symbol: str, start_date: str, end_date: str):
+def get_stock_data(
+    symbol: str,
+    start_date: str,
+    end_date: str,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
     """
     Fetch historical data for the given stock symbol between the specified dates.
 
@@ -31,6 +41,8 @@ def get_stock_indicators(
     symbol: str,
     start_date: str,
     end_date: str,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     """
     Fetch technical indicators (moving averages and RSI) for the given stock symbol between the specified dates.
@@ -51,6 +63,8 @@ def get_stock_statistics(
     symbol: str,
     start_date: str,
     end_date: str,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ):
     """
     Fetch summary statistics for the given stock symbol between the specified dates.
@@ -67,7 +81,11 @@ def get_stock_statistics(
 
 
 @router.get("/stock/{symbol}/news")
-def get_stock_news(symbol: str):
+def get_stock_news(
+    symbol: str,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
     """
     Fetch latest news for the given stock symbol.
 

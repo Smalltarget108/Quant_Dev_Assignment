@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, CircularProgress, Table, TableBody, TableCell, TableContainer, TableRow, Paper } from '@mui/material';
+import { Box, Typography, CircularProgress, Table, TableBody, TableCell, TableContainer, TableRow } from '@mui/material';
 import { fetchStockStatistics } from '../services/api';
 
 interface StatisticsProps {

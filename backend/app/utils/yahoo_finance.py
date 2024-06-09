@@ -124,6 +124,8 @@ def fetch_financials(symbol: str):
             "Cost Of Revenue",
         ],
     ]
+    # latest 4year data
+    top_metrics = top_metrics.iloc[:4]
     # print("Top metrics data:", top_metrics)
     top_metrics.replace([pd.NA, float("inf"), float("-inf")], None, inplace=True)
     financials_dict = top_metrics.to_dict()
