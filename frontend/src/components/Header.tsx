@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import UserProfile from './UserProfile';
@@ -13,16 +13,14 @@ const Header: React.FC = () => {
 
   const handleUser = async (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
-    if (!user) {
-      try {
-        const userProfile = await fetchUserProfile();
-        setUser(userProfile);
-      } catch (error: any) {
-        console.error('Error fetching user profile:', error);
-        if (error.response && error.response.status === 401) {
-          logout(); // Log out if the token is invalid
-          <Navigate to="/login" />
-        }
+    try {
+      const userProfile = await fetchUserProfile();
+      setUser(userProfile);
+    } catch (error: any) {
+      console.error('Error fetching user profile:', error);
+      if (error.response && error.response.status === 401) {
+        logout(); // Log out if the token is invalid
+        <Navigate to="/login" />
       }
     }
   };

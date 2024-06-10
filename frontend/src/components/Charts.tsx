@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Plot from 'react-plotly.js';
-import { Box, Typography, Grid, Button, TextField } from '@mui/material';
+import { Box, Typography, Grid, Button, TextField, Snackbar, Alert } from '@mui/material';
 import Statistics from './Statistics';
 import { fetchStockData, fetchStockIndicators } from '../services/api';
 
@@ -19,27 +19,27 @@ interface IndicatorsData {
   rsi: { [date: string]: number };
 }
 
-
-const Charts: React.FC<{symbol: string}> = ({ symbol }) => {
+const Charts: React.FC<{ symbol: string }> = ({ symbol }) => {
   const [data, setData] = useState<StockData | null>(null);
   const [indicators, setIndicators] = useState<IndicatorsData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [startDate, setStartDate] = useState<string>(new Date(new Date().setMonth(new Date().getMonth() - 6)).toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState<string>(new Date().toISOString().split('T')[0]);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchData = async (start: string, end: string) => {
     try {
       const stockData = await fetchStockData(symbol, start, end);
-      // console.log("Charts.tsx: stockData:", stockData);
       const indicatorsData = await fetchStockIndicators(symbol, start, end);
-      // console.log("Charts.tsx: indicatorsData:", indicatorsData);
 
       if (!stockData || !Object.keys(stockData.Open).length) {
-        throw new Error('Invalid stock data');
+        setError('Invalid Request');
+        return;
       }
 
       if (!indicatorsData || indicatorsData.error) {
-        throw new Error('Invalid indicators data');
+        setError('Invalid Request');
+        return;
       }
 
       setData({
@@ -55,8 +55,9 @@ const Charts: React.FC<{symbol: string}> = ({ symbol }) => {
         movingAverage200: indicatorsData["200_day_moving_average"],
         rsi: indicatorsData["RSI"],
       });
-    } catch (error) {
-      console.error("Error fetching stock data or indicators:", error);
+    } catch (err:any) {
+      console.error("Error fetching stock data or indicators:", err);
+      setError(err.message || 'Invalid Request');
     } finally {
       setLoading(false);
     }
@@ -65,6 +66,10 @@ const Charts: React.FC<{symbol: string}> = ({ symbol }) => {
   useEffect(() => {
     fetchData(startDate, endDate);
   }, [symbol, startDate, endDate]);
+
+  const handleCloseSnackbar = () => {
+    setError(null);
+  };
 
   if (loading) {
     return <Typography variant="h6">Loading...</Typography>;
@@ -230,6 +235,16 @@ const Charts: React.FC<{symbol: string}> = ({ symbol }) => {
         }}
       />
       <Statistics symbol={symbol} startDate={startDate} endDate={endDate} />
+      <Snackbar
+        open={!!error}
+        onClose={handleCloseSnackbar}
+        autoHideDuration={6000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity="error" sx={{ width: '100%' }}>
+          {error}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

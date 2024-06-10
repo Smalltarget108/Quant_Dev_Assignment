@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState,useEffect, ReactNode} from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface AuthContextProps {
   isAuthenticated: boolean;
@@ -16,14 +17,20 @@ export const useAuth = () => {
   return context;
 };
 
-
-
 interface AuthProviderProps {
   children: ReactNode;
 }
 
 const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(!!localStorage.getItem('token'));
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
 
   const login = (token: string) => {
     localStorage.setItem('token', token);
@@ -33,6 +40,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('token');
     setIsAuthenticated(false);
+    navigate('/login'); 
   };
 
   return (

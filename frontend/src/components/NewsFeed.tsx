@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, List, ListItem, ListItemText, Link } from '@mui/material';
+import { Box, Typography, List, ListItem, ListItemText, Link, CircularProgress } from '@mui/material';
 import { fetchNews } from '../services/api';
 
 interface NewsFeedProps {
@@ -9,15 +9,16 @@ interface NewsFeedProps {
 const NewsFeed: React.FC<NewsFeedProps> = ({ symbol }) => {
   const [news, setNews] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const newsData = await fetchNews(symbol);
-        // console.log("Fetched news data:", newsData);
         setNews(newsData);
-      } catch (error) {
-        console.error("Error fetching news:", error);
+      } catch (err) {
+        console.error("Error fetching news:", err);
+        setError("Failed to fetch news");
       } finally {
         setLoading(false);
       }
@@ -27,11 +28,15 @@ const NewsFeed: React.FC<NewsFeedProps> = ({ symbol }) => {
   }, [symbol]);
 
   if (loading) {
-    return <Typography>Loading...</Typography>;
+    return <CircularProgress />;
+  }
+
+  if (error) {
+    return <Typography variant="h6">{error}</Typography>;
   }
 
   if (!news || news.length === 0) {
-    return <Typography>No news available.</Typography>;
+    return <Typography variant="h6">No news available.</Typography>;
   }
 
   return (

@@ -1,19 +1,24 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
 
 # from app.utils.fmp import fetch_company_info, fetch_company_financials
 from app.utils.yahoo_finance import (
-    # fetch_stock_data,
-    # fetch_stock_statistics,
-    # fetch_summary,
     fetch_profile,
     fetch_financials,
 )
+from app import models
+from .auth import get_current_user
+from app.dependencies import get_db
 
 router = APIRouter()
 
 
 @router.get("/company/{symbol}/info")
-def get_company_info(symbol: str):
+def get_company_info(
+    symbol: str,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
     """
     Fetch profile information for the given stock symbol.
 
@@ -27,7 +32,11 @@ def get_company_info(symbol: str):
 
 
 @router.get("/company/{symbol}/financials")
-def get_company_financials(symbol: str):
+def get_company_financials(
+    symbol: str,
+    current_user: models.User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
     """
     Fetch financial data for the given stock symbol.
 

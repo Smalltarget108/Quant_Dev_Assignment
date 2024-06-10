@@ -9,8 +9,8 @@ import ProtectedRoute from './components/ProtectedRoute';
 
 const App: React.FC = () => {
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <Header />
         <Routes>
           <Route path="/login" element={<Login />} />
@@ -25,9 +25,8 @@ const App: React.FC = () => {
           />
           <Route path="/" element={<Login />} />
         </Routes>
-
-      </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </Router>
   );
 };
 
