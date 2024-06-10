@@ -98,7 +98,6 @@ def fetch_profile(symbol: str):
         "State": stock.info.get("state"),
         "Country": stock.info.get("country"),
         "Website": stock.info.get("website"),
-        "Logo URL": stock.info.get("logo_url"),
     }
     return profile
 
@@ -144,7 +143,6 @@ def fetch_news(symbol: str):
                 "Link": article.get("link"),
                 "Published Date": article.get("providerPublishTime"),
                 "Source": article.get("publisher"),
-                "Summary": article.get("summary"),
             }
         )
     return formatted_news

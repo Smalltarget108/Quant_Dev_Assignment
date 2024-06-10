@@ -20,7 +20,7 @@ const Search: React.FC<SearchProps> = ({ onSearch }) => {
   };
 
   return (
-    <Box className="p-4 mb-3 bg-white shadow-md rounded-md">
+    <Box className="p-4 mt-16 mb-3 bg-white shadow-md rounded-md">
       <Typography variant="h6" component="h2" className="text-center">
         Search Finance Data
       </Typography>

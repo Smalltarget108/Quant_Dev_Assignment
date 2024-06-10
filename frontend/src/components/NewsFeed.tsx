@@ -45,7 +45,6 @@ const NewsFeed: React.FC<NewsFeedProps> = ({ symbol }) => {
                 <>
                   <Typography component="span">{new Date(article["Published Date"] * 1000).toLocaleDateString()}</Typography>
                   <Typography component="span"> - {article.Source}</Typography>
-                  <Typography>{article.Summary}</Typography>
                 </>
               }
             />

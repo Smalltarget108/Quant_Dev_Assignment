@@ -45,13 +45,6 @@ const Profile: React.FC<ProfileProps> = ({ symbol }) => {
       <TableContainer >
         <Table>
           <TableBody>
-            {profile["Logo URL"] && (
-              <TableRow>
-                <TableCell colSpan={2} align="center">
-                  <img src={profile["Logo URL"]} alt="Company Logo" style={{ width: '150px', height: 'auto' }} />
-                </TableCell>
-              </TableRow>
-            )}
             <TableRow>
               <TableCell><strong>Sector</strong></TableCell>
               <TableCell>{profile["Sector"]}</TableCell>

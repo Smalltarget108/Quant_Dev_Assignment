@@ -192,7 +192,7 @@ const Charts: React.FC<{symbol: string}> = ({ symbol }) => {
           },
         ]}
         layout={{
-          title: 'Data Visualization',
+          title: '',
           grid: { rows: 3, columns: 1, pattern: 'independent' },
           yaxis: { title: 'Price', domain: [0.4, 1] },
           yaxis2: { title: 'Volume', domain: [0.2, 0.36] },

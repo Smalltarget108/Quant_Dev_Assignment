@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import UserProfile from './UserProfile';
 import Popover from '@mui/material/Popover';
@@ -21,6 +21,7 @@ const Header: React.FC = () => {
         console.error('Error fetching user profile:', error);
         if (error.response && error.response.status === 401) {
           logout(); // Log out if the token is invalid
+          <Navigate to="/login" />
         }
       }
     }
@@ -38,7 +39,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <header className='flex justify-between items-center px-16 py-4 border-b border-gray-300'>
+    <header className='fixed top-0 left-0 right-0 h-16 bg-white z-50 flex justify-between items-center px-16 py-4 border-b border-gray-300'>
       <div className='font-semibold'>
         <Link to='/dashboard' className='text-black no-underline'>FinDA</Link>
       </div>

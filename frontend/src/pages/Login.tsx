@@ -14,8 +14,7 @@ const Login: React.FC = () => {
     try {
       const response = await login(username, password);
       authLogin(response.data.access_token);
-      navigate('/dashboard');
-      window.location.reload();
+      navigate('/dashboard')
     } catch (error) {
       console.error('Login failed', error);
     }

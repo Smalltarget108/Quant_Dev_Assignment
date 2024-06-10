@@ -47,30 +47,30 @@ const Dashboard: React.FC = () => {
           variant="permanent"
           anchor="left"
           sx={{
-            width: "20%",
+            width: "18%",
             '& .MuiDrawer-paper': {
-              width: "20%",
+              width: "18%",
               boxSizing: 'border-box',
-              marginTop: '58px',
+              marginTop: '64px',
             },
           }}
         >
           <Box>
             <List>
               <ListItem component="button" onClick={() => setSelectedComponent('Charts')}>
-                <ListItemText primary="Charts"/>
+                <ListItemText primary="Charts" className="text-center"/>
               </ListItem>
               {/* <ListItem component="button" onClick={() => setSelectedComponent('Statistics')}>
                 <ListItemText primary="Statistics" />
               </ListItem> */}
               <ListItem component="button" onClick={() => setSelectedComponent('NewsFeed')}>
-                <ListItemText primary="News" />
+                <ListItemText primary="News" className="text-center"/>
               </ListItem>
               <ListItem component="button" onClick={() => setSelectedComponent('Profile')}>
-                <ListItemText primary="Profile" />
+                <ListItemText primary="Profile" className="text-center"/>
               </ListItem>
               <ListItem component="button" onClick={() => setSelectedComponent('Financials')}>
-                <ListItemText primary="Financials" />
+                <ListItemText primary="Financials" className="text-center"/>
               </ListItem>
             </List>
           </Box>
