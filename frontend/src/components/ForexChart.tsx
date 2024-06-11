@@ -14,6 +14,9 @@ const ForexChart: React.FC<{symbol: string;}> = ({ symbol }) => {
   const [startDate, setStartDate] = useState<string>(new Date(new Date().setMonth(new Date().getMonth() - 6)).toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState<string>(new Date().toISOString().split('T')[0]);
 
+  const [tempStartDate, setTempStartDate] = useState<string>(startDate);
+  const [tempEndDate, setTempEndDate] = useState<string>(endDate);
+
   const fetchData = async (start: string, end: string) => {
     try {
       const [fromCurrency, toCurrency] = symbol.split('/');
@@ -44,6 +47,11 @@ const ForexChart: React.FC<{symbol: string;}> = ({ symbol }) => {
 
   const { dates, rates } = data;
 
+  const handleUpdateClick = () => {
+    setStartDate(tempStartDate);
+    setEndDate(tempEndDate);
+  };
+
   const handlePeriodChange = (months: number) => {
     const newStartDate = new Date();
     newStartDate.setMonth(newStartDate.getMonth() - months);
@@ -61,8 +69,8 @@ const ForexChart: React.FC<{symbol: string;}> = ({ symbol }) => {
           <TextField
             label="Start Date"
             type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
+            value={tempStartDate}
+            onChange={(e) => setTempStartDate(e.target.value)}
             InputLabelProps={{
               shrink: true,
             }}
@@ -72,15 +80,15 @@ const ForexChart: React.FC<{symbol: string;}> = ({ symbol }) => {
           <TextField
             label="End Date"
             type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
+            value={tempEndDate}
+            onChange={(e) => setTempEndDate(e.target.value)}
             InputLabelProps={{
               shrink: true,
             }}
           />
         </Grid>
         <Grid item>
-          <Button variant="contained" className="mr-4" onClick={() => fetchData(startDate, endDate)}>
+          <Button variant="contained" className="mr-4" onClick={handleUpdateClick}>
             Update
           </Button>
         </Grid>

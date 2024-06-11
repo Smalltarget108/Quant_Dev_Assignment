@@ -14,6 +14,18 @@ api.interceptors.request.use((config) => {
   return Promise.reject(error);
 });
 
+// Redirect to login page if the token is invalid
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      localStorage.removeItem('token'); 
+      window.location.href = '/login'; 
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const fetchUserProfile = async () => {
   const response = await api.get('/auth/me');
   return response.data;

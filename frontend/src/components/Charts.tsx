@@ -26,6 +26,8 @@ const Charts: React.FC<{ symbol: string }> = ({ symbol }) => {
   const [startDate, setStartDate] = useState<string>(new Date(new Date().setMonth(new Date().getMonth() - 6)).toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState<string>(new Date().toISOString().split('T')[0]);
   const [error, setError] = useState<string | null>(null);
+  const [tempStartDate, setTempStartDate] = useState<string>(startDate);
+  const [tempEndDate, setTempEndDate] = useState<string>(endDate);
 
   const fetchData = async (start: string, end: string) => {
     try {
@@ -57,7 +59,7 @@ const Charts: React.FC<{ symbol: string }> = ({ symbol }) => {
       });
     } catch (err:any) {
       console.error("Error fetching stock data or indicators:", err);
-      setError(err.message || 'Invalid Request');
+      setError('Invalid Request');
     } finally {
       setLoading(false);
     }
@@ -82,12 +84,18 @@ const Charts: React.FC<{ symbol: string }> = ({ symbol }) => {
   const { dates, open, high, low, close, volume } = data;
   const { movingAverage50, movingAverage200, rsi } = indicators || {};
 
+  const handleUpdateClick = () => {
+    setStartDate(tempStartDate);
+    setEndDate(tempEndDate);
+  };
+
   const handlePeriodChange = (months: number) => {
     const newStartDate = new Date();
     newStartDate.setMonth(newStartDate.getMonth() - months);
     setStartDate(newStartDate.toISOString().split('T')[0]);
     setEndDate(new Date().toISOString().split('T')[0]);
   };
+
 
   return (
     <Box className="p-4 bg-white shadow-md rounded-md">
@@ -96,8 +104,8 @@ const Charts: React.FC<{ symbol: string }> = ({ symbol }) => {
           <TextField
             label="Start Date"
             type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
+            value={tempStartDate}
+            onChange={(e) => setTempStartDate(e.target.value)}
             InputLabelProps={{
               shrink: true,
             }}
@@ -108,14 +116,14 @@ const Charts: React.FC<{ symbol: string }> = ({ symbol }) => {
             label="End Date"
             type="date"
             value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
+            onChange={(e) => setTempEndDate(e.target.value)}
             InputLabelProps={{
               shrink: true,
             }}
           />
         </Grid>
         <Grid item>
-          <Button variant="contained" className="mr-4" onClick={() => fetchData(startDate, endDate)}>
+          <Button variant="contained" className="mr-4" onClick={handleUpdateClick}>
             Update
           </Button>
         </Grid>
